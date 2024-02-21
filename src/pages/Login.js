@@ -2,11 +2,12 @@ import React from 'react';
 import { Button, Checkbox, Form, Input, notification } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './authContext'; 
 import './Login.css';
 const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:28000' : 'http://39.99.233.173:28000';
 const Login = () => {
   const navigate = useNavigate(); // 将 useNavigate 放在组件的顶层
-
+  const { loginAuth } = useAuth();
   const onFinish = (values) => {
     const { username, password } = values;
     const data = {
@@ -27,6 +28,7 @@ const Login = () => {
         if (response.status === 200) {
           console.log('Success:', response.data);
           navigate('/login'); // 使用传递的 navigate 函数
+          loginAuth();
         } else {
           console.log('Failed:', response.data);
           notification.error({

@@ -1,0 +1,14 @@
+.centered-container {
+    background-image: url('../../public/miku.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;     
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.centered-container form {
+    background-color: white;
+    max-width: 600px;
+}

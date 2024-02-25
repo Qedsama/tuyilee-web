@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Upload, Breadcrumb, Layout, Menu, theme, message, Modal } from 'antd';
+import axios from 'axios';
+import { Form, Input, Button, Upload, Breadcrumb, Layout, Menu, theme, message, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom'
-import { UserOutlined } from '@ant-design/icons'; // 导入用户图标
+import { UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './authContext';
 import './Sell.css';
-
+const apiUrl = 'http://8.141.94.202:28000';
 const { Header, Content, Footer } = Layout;
 
 const Sell = () => {
@@ -26,9 +27,37 @@ const Sell = () => {
 
   const onFinish = (values) => {
     console.log('Received values:', values);
-    // 在这里可以处理表单提交逻辑，比如向后端发送数据等
+    const { bookName, author, price, description, image } = values;
+    
+    const formData = new FormData();
+    formData.append('bookName', bookName);
+    formData.append('author', author);
+    formData.append('price', price);
+    formData.append('description', description);
+    formData.append('image', image[0].originFileObj);
+    
+    axios.post(apiUrl+'/api/sell', formData)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('Success:', response.data);
+        } else {
+          console.log('Failed:', response.data);
+          notification.error({
+            message: 'Error',
+            description: response.data.errorMessage,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        notification.error({
+          message: 'Error',
+          description: 'An error occurred while making the request.',
+        });
+      });
     message.success('提交成功');
   };
+  
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -40,7 +69,7 @@ const Sell = () => {
     if (!isJpgOrPng) {
       message.error('只能上传 JPG/PNG 格式的图片');
     }
-    return isJpgOrPng;
+    return false;
   };
 
   return (
@@ -146,6 +175,7 @@ const Sell = () => {
               rules={[{ required: true, message: '请上传书籍封面' }]}
             >
               <Upload
+                action=""
                 beforeUpload={beforeUpload}
                 maxCount={1}
                 listType="picture"

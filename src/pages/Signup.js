@@ -1,18 +1,22 @@
 import React from 'react';
 import { Button, Checkbox, Form, Input, notification } from 'antd';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Signup.css';
-const apiUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:28000' : 'http://39.99.233.173:28000';
+
+const apiUrl = 'http://8.141.94.202:28000';
+
 const Signup = () => {
-  const navigate = useNavigate(); // 将 useNavigate 放在组件的顶层
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
     const { username, password } = values;
+
     const data = {
       username,
       password,
     };
+
     const jsonData = JSON.stringify(data);
     const config = {
       headers: {
@@ -20,13 +24,11 @@ const Signup = () => {
       },
     };
 
-    // 发送POST请求
-    axios
-      .post(apiUrl+'/api/signup', jsonData, config)
+    axios.post(apiUrl + '/api/signup', jsonData, config)
       .then((response) => {
         if (response.status === 200) {
           console.log('Success:', response.data);
-          navigate('/signup'); // 使用传递的 navigate 函数
+          navigate('/signup');
         } else {
           console.log('Failed:', response.data);
           notification.error({
@@ -52,18 +54,10 @@ const Signup = () => {
     <div className="centered-container">
       <Form
         name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          maxWidth: 600,
-        }}
-        initialValues={{
-          remember: true,
-        }}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -71,12 +65,7 @@ const Signup = () => {
         <Form.Item
           label="Username"
           name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
-          ]}
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
           <Input />
         </Form.Item>
@@ -84,12 +73,7 @@ const Signup = () => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
-          ]}
+          rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -97,20 +81,12 @@ const Signup = () => {
         <Form.Item
           name="remember"
           valuePropName="checked"
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
+          wrapperCol={{ offset: 8, span: 16 }}
         >
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
             Submit
           </Button>

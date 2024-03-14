@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Upload, Breadcrumb, Layout, Menu, theme, message, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './authContext';
+import pica from 'pica';
 import './Sell.css';
-const apiUrl = 'http://8.141.94.202:28000';
+//const apiUrl = 'http://8.141.94.202:28000';
+const apiUrl='http://localhost:28000';
 const { Header, Content, Footer } = Layout;
 
 const Sell = () => {
@@ -17,12 +19,64 @@ const Sell = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
   const [modalVisible, setModalVisible] = useState(false); 
+  const [formData, setFormData] = useState(new FormData());
+  const pica = require('pica')();
   const handleLoginClick = () => {
     navigate('/login');
   };
 
   const handleSignupClick = () => {
     navigate('/signup');
+  };
+
+  const handleImageUpload = async (file) => {
+    const reader = new FileReader();
+
+    // 使用FileReader对象读取图片文件
+    reader.readAsDataURL(file);
+
+    reader.onload = async (event) => {
+      // 创建一个新的Image对象
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = async () => {
+        // 创建一个Canvas对象
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 设置Canvas的尺寸
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // 将图片绘制到Canvas上
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        // 将Canvas上的图片数据进行压缩处理
+        canvas.toBlob((blob) => {
+          // 创建一个新的File对象，替换原始文件
+          const compressedFile = new File([blob], file.name, {
+            type: blob.type,
+            lastModified: Date.now(),
+          });
+
+          // 更新FormData对象中的图片信息
+          const updatedFormData = new FormData();
+          updatedFormData.append('image', compressedFile);
+          setFormData(updatedFormData);
+        }, 'image/jpeg', 0.7); // 设置压缩质量为0.7
+      };
+    };
+
+    reader.onerror = () => {
+      message.error('读取文件失败');
+    };
+  };
+
+  const beforeUpload = (file) => {
+    // 在这里处理文件上传前的压缩
+    handleImageUpload(file);
+    return false; // 阻止默认上传行为
   };
 
   const onFinish = (values) => {
@@ -62,14 +116,6 @@ const Sell = () => {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
     message.error('提交失败，请检查表单信息');
-  };
-
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('只能上传 JPG/PNG 格式的图片');
-    }
-    return false;
   };
 
   return (

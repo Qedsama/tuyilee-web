@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Signup.css';
 
-const apiUrl = 'http://8.141.94.202:28000';
+//const apiUrl = 'http://8.141.94.202:28000';
+const apiUrl='http://localhost:28000';
 
 const Signup = () => {
   const navigate = useNavigate();

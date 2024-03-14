@@ -4,7 +4,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './authContext'; 
 import './Login.css';
-const apiUrl = 'http://8.141.94.202:28000';
+//const apiUrl = 'http://8.141.94.202:28000';
+const apiUrl='http://localhost:28000';
 const Login = () => {
   const navigate = useNavigate(); // 将 useNavigate 放在组件的顶层
   const { loginAuth } = useAuth();

@@ -1,0 +1,20 @@
+.book-image {
+    width: 100px; /* 或者您希望的尺寸 */
+    height: auto;
+    object-fit: cover; /* 保持图片比例 */
+  }
+  
+  .book-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .book-price, .book-description {
+    margin: 0; /* 移除默认的 margin */
+  }
+
+  .full-width-btn {
+    width: 20%; /* 设置按钮宽度为 100% */
+  }
+  
